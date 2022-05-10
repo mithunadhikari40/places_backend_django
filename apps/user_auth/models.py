@@ -1,3 +1,4 @@
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from apps.utils.timestamp.models import TimeStamp
 
@@ -51,7 +52,7 @@ class AuthUserManager(BaseUserManager):
 """This class creates a User model which defines all the fields and their settings for a User."""
 
 
-class UserAuthModel(AbstractBaseUser, TimeStamp):
+class UserAuthModel(AbstractBaseUser, TimeStamp,PermissionsMixin):
     name = models.CharField(null=False, blank=False, max_length=512)
     email = models.EmailField(null=False, blank=False, unique=True)
     phone = models.FloatField(max_length=11)
