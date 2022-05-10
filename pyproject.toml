@@ -8,6 +8,9 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.8"
 djangorestframework = "^3.13.1"
+drf-spectacular = "^0.22.1"
+djangorestframework-simplejwt = "^5.1.0"
+django-filter = "^21.1"
 
 [tool.poetry.dev-dependencies]
 

@@ -6,13 +6,14 @@ from .models import UserAuthModel
 from rest_framework import serializers
 
 
-class UserAuthSerializer(serializers.Serializer):
-    name = serializers.CharField(null=False, blank=False, max_length=512)
-    email = serializers.EmailField(null=False, blank=False)
-    phone = serializers.FloatField(max_length=11)
+class UserAuthSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(allow_blank=False, allow_null=False, max_length=512)
+    email = serializers.EmailField(allow_null=False, allow_blank=False)
+    phone = serializers.FloatField()
     password = serializers.CharField(max_length=512)
-    registration_date = serializers.DateTimeField()
-    is_admin = serializers.BooleanField()
+    # registration_date = serializers.DateTimeField(allow_null=True)
+    is_superuser = serializers.BooleanField(default=False)
+    is_staff = serializers.BooleanField(default=True)
     push_token = serializers.CharField(max_length=1024)
 
     def create(self, validated_data):
@@ -22,8 +23,11 @@ class UserAuthSerializer(serializers.Serializer):
         instance.name = validated_data.get('name', instance.name)
         instance.phone = validated_data.get('phone', instance.phone)
         instance.password = validated_data.get('password', instance.password)
-        instance.is_admin = validated_data.get('is_admin', instance.is_admin)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_admin)
+        instance.is_staff = validated_data.get('is_staff', instance.is_admin)
         instance.push_token = validated_data.get('push_token', instance.push_token)
+        instance.save()
+        return instance
 
     """Field level validation, Its syntax will be validate_ followed by field name
         We either raise an validation error or return that value, we can access the value in second parameter"""
@@ -47,6 +51,21 @@ class UserAuthSerializer(serializers.Serializer):
             raise serializers.ValidationError("Password is too similar to name")
         if email.lower() == password.lower():
             raise serializers.ValidationError("Password is too similar to email")
-        if phone.lower() == password.lower():
+        if str(phone).lower() == password.lower():
             raise serializers.ValidationError("Password is too similar to phone")
         return data
+
+    class Meta:
+        extra_kwargs = {'password': {'write_only': True}}
+        model = UserAuthModel
+        fields = [
+            'id',
+            'name',
+            'email',
+            'phone',
+            'password',
+            # 'registration_date',
+            'push_token',
+            'is_staff',
+            'is_superuser'
+        ]

@@ -10,7 +10,8 @@ class UserAuthAdmin(admin.ModelAdmin):
         'email',
         'phone',
         'registration_date',
-        'is_admin',
+        'is_staff',
+        'is_superuser',
         'push_token'
     ]
 
