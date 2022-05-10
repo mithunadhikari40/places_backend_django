@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'apps.utils.timestamp.apps.TimestampConfig',
-    # 'apps.user_auth.apps.UserAuthConfig',
-    'apps.user_auth',
+    'apps.user_auth.apps.UserAuthConfig'
+    # 'apps.user_auth',
 ]
 AUTH_USER_MODEL = 'user_auth.UserAuthModel'
 

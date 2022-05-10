@@ -39,8 +39,8 @@ class AuthUserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
         user = self.create_user(
-            name=f'Admin {email}',
             email=email,
+            name=f'Admin {email}',
             password=password,
             phone=1234567890,
             **extra_fields
@@ -62,11 +62,11 @@ class UserAuthModel(AbstractBaseUser, TimeStamp):
     push_token = models.CharField(null=True, blank=True, max_length=1024)
 
     USERNAME_FIELD = 'email'
-    objects = None
-    active_objects = AuthUserManager()
+    objects = AuthUserManager()
+    # active_objects = AuthUserManager()
 
     class Meta:
-        db_table = 'user_table',
+        db_table = "user_table"
         app_label = "user_auth"
 
     def __str__(self):
