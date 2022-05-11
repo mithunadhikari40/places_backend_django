@@ -24,6 +24,7 @@ class AuthUserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             name=name,
+            password=password,
             phone=phone,
             **extra_fields
         )
@@ -38,7 +39,7 @@ class AuthUserManager(BaseUserManager):
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError(_("Superuser must have is_superuser=True."))
+            raise ValueError("Superuser must have is_superuser=True.")
         user = self.create_user(
             email=email,
             name=f'Admin {email}',
