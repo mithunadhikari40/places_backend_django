@@ -68,19 +68,27 @@ class LoginApi(GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        data = {}
         request_body = json.loads(request.body)
+
+        if 'email' not in request_body:
+            return Response({'error': 'email is required'}, status=status.HTTP_400_BAD_REQUEST)
+        if 'password' not in request_body:
+            return Response({'error': 'password is required'}, status=status.HTTP_400_BAD_REQUEST)
         email = request_body['email']
         password = request_body['password']
+        data = {}
+
         try:
 
             account = UserAuthModel.objects.get(email=email)
         except BaseException as e:
-            raise ValidationError({"error": f'{str(e)}'})
+            # raise ValidationError({"error": f'{str(e)}'})
+            return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
         token = get_token_for_user(account)
         if not check_password(password, account.password):
-            raise ValidationError({"error": "Incorrect Login credentials"})
+            return Response({'error': "Incorrect Login credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            # raise ValidationError({"error": "Incorrect Login credentials"})
 
         if account:
             if account.is_active:
@@ -92,6 +100,9 @@ class LoginApi(GenericAPIView):
 
                 return Response(data)
             else:
-                raise ValidationError({"error": f'Account not active'})
+                return Response({'error': 'Account is not active'}, status=status.HTTP_400_BAD_REQUEST)
+                # raise ValidationError({"error": f'Account not active'})
         else:
-            raise ValidationError({"error": f'Account doesnt exist'})
+            return Response({'error': 'Account does not exist for the provided credentials'},
+                            status=status.HTTP_400_BAD_REQUEST)
+            # raise ValidationError({"error": f'Account doesnt exist'})

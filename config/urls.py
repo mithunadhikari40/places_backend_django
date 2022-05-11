@@ -25,6 +25,6 @@ urlpatterns = [
 
     # default auth route and other rest_framework routes
     path('auth/', include('rest_framework.urls', namespace="rest_framework")),
-    path('user/', include('apps.user_auth.urls'), name="user"),
+    path('api/auth/', include('apps.user_auth.urls'), name="user"),
 
 ]
