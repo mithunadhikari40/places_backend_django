@@ -14,7 +14,7 @@ class UserAuthSerializer(serializers.ModelSerializer):
     # registration_date = serializers.DateTimeField(allow_null=True)
     is_superuser = serializers.BooleanField(default=False)
     is_staff = serializers.BooleanField(default=True)
-    push_token = serializers.CharField(max_length=1024)
+    push_token = serializers.CharField(max_length=1024, allow_null=True, allow_blank=True, default=None)
 
     def create(self, validated_data):
         return UserAuthModel.objects.create(**validated_data)

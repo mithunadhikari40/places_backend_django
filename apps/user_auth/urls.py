@@ -15,6 +15,6 @@ router = DefaultRouter()
 
 urlpatterns = [
     # path('', include(router.urls)),
-    path('', views.RegisterApi.as_view()),
+    path('register', views.RegisterApi.as_view()),
 
 ]

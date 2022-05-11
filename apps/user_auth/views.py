@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from apps.user_auth.models import UserAuthModel
 from apps.user_auth.serializers import UserAuthSerializer
+from apps.user_auth.tokenization import get_token_for_user
 
 
 class RegisterApi(GenericAPIView):
@@ -24,8 +25,9 @@ class RegisterApi(GenericAPIView):
                 account = serializer.save()
                 account.is_active = True
                 account.save()
-                token = Token.objects.get_or_create(user=account)[0].key
-                print(f"The email {account.email} {account.registration_date} {account.password} {token}")
+                # token = Token.objects.get_or_create(user=account)[0].key
+                token = get_token_for_user(account)
+
                 data = {
                     'message': 'User Created Successfully',
                     'user': {
@@ -35,12 +37,14 @@ class RegisterApi(GenericAPIView):
                         'registration_date': account.registration_date,
                         'push_token': account.push_token,
                         'id': account.id,
-                        'is_superuser':account.is_superuser
+                        'is_superuser': account.is_superuser
                     },
-                    'token': token
+                    # 'token': token
                 }
+                data.update(token)
                 return Response(data)
             else:
+                print(f"The invalid set of data is {serializer.errors}")
                 return Response(serializer.errors)
 
         except IntegrityError as e:
@@ -50,3 +54,5 @@ class RegisterApi(GenericAPIView):
 
         except KeyError as e:
             raise ValidationError({'400': f'{str(e)}'})
+
+
