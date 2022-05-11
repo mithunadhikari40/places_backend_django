@@ -17,5 +17,6 @@ urlpatterns = [
     # path('', include(router.urls)),
     path('register', views.RegisterApi.as_view()),
     path('login', views.LoginApi.as_view()),
+    path('logout', views.LogOutApi.as_view()),
 
 ]

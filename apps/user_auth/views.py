@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -10,14 +10,19 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 # Create your views here.
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 # from rest_framework_simplejwt.tokens import Token
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.settings import APISettings, USER_SETTINGS, DEFAULTS, IMPORT_STRINGS
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, BlacklistMixin, Token
 
 from apps.user_auth.models import UserAuthModel
 from apps.user_auth.serializers import UserAuthSerializer
 from apps.user_auth.tokenization import get_token_for_user
+
+from django.conf import settings
 
 
 class RegisterApi(GenericAPIView):
@@ -106,3 +111,28 @@ class LoginApi(GenericAPIView):
             return Response({'error': 'Account does not exist for the provided credentials'},
                             status=status.HTTP_400_BAD_REQUEST)
             # raise ValidationError({"error": f'Account doesnt exist'})
+
+
+class LogOutApi(GenericAPIView):
+    serializer_class = UserAuthSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        try:
+            # refresh_token = request.META.get("Authorization")
+            # refresh_token = request.headers.get('Authorization')
+            refresh_token = request.data["refresh_token"]
+            # split_part = refresh_token.split()[1].strip()
+            print(f"The current user is this one {refresh_token}")
+
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            # request.user.auth_token.delete()
+            logout(request)
+            return Response({'message': 'User Logged out successfully'})
+        except BaseException as e:
+            return Response({'message': f'{str(e)}'})
+
