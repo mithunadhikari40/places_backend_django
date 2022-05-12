@@ -26,7 +26,8 @@ urlpatterns = [
 
     # default auth route and other rest_framework routes
     path('auth/', include('rest_framework.urls', namespace="rest_framework")),
-    path('api/auth/', include('apps.user_auth.urls'), name="user"),
+    path('api/auth/', include('apps.user_auth.urls'), name="auth"),
+    path('api/user/', include('apps.user.urls'), name="user"),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 

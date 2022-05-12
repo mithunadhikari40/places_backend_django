@@ -73,3 +73,5 @@ class UserAuthModel(AbstractBaseUser, TimeStamp,PermissionsMixin):
 
     def __str__(self):
         return self.name
+
+

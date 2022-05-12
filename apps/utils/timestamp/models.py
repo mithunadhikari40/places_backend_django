@@ -11,7 +11,7 @@ class TimeStamp(models.Model):
     # auto_now adds an entry every time it is updated
     updated_at = models.DateTimeField(auto_now=True)
 
-    deleted_at = models.DateTimeField(null=True, blank=True, )
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
 
     class Meta:
         abstract = True
