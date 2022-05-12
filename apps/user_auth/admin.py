@@ -32,6 +32,7 @@ class UserAuthAdmin(UserAdmin):
         'registration_date',
         'is_staff',
         'is_superuser',
+        'deleted_at',
         'push_token'
     ]
     list_filter = ['email', 'is_superuser']
