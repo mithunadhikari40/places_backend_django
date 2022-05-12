@@ -18,17 +18,21 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt import views as jwt_views
 
+from config import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # for the docs
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+                  path('admin/', admin.site.urls),
 
-    # default auth route and other rest_framework routes
-    path('auth/', include('rest_framework.urls', namespace="rest_framework")),
-    path('api/auth/', include('apps.user_auth.urls'), name="auth"),
-    path('api/user/', include('apps.user.urls'), name="user"),
-    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+                  # for the docs
+                  path('schema/', SpectacularAPIView.as_view(), name='schema'),
+                  path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
 
-]
+                  # default auth route and other rest_framework routes
+                  path('auth/', include('rest_framework.urls', namespace="rest_framework")),
+                  path('api/auth/', include('apps.user_auth.urls'), name="auth"),
+                  path('api/user/', include('apps.user.urls'), name="user"),
+                  path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

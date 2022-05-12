@@ -14,8 +14,8 @@ class UserSavedPlacesSerializer(serializers.ModelSerializer):
     street = serializers.CharField(max_length=100)
     address = serializers.CharField(max_length=512)
     monument = serializers.CharField(max_length=100)
-    latitude = serializers.FloatField(max_length=10)
-    longitude = serializers.FloatField(max_length=10)
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
 
     def validate_image(self, value):
         length = len(value)
