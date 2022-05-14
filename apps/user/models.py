@@ -2,12 +2,17 @@ from django.db import models
 
 from apps.user_auth.models import UserAuthModel
 from apps.utils.timestamp.models import TimeStamp
+from apps.utils.timestamp.utils import get_random_string_with_datetime
+
+
+def upload_to(related_name, filename):
+    print(f"The args are {filename} and other one is {related_name}")
+    ext = filename.split(".")[-1]
+    name = get_random_string_with_datetime()
+    return f'places/images/{name}.{ext}'
 
 
 class UserSavedPlacesModel(TimeStamp):
-    def upload_to(self, filename):
-        return f'images/{filename}'.format(filename=filename)
-
     user = models.ForeignKey(UserAuthModel, on_delete=models.CASCADE)
     name = models.CharField(max_length=512)
     image = models.ImageField("images/", upload_to=upload_to)

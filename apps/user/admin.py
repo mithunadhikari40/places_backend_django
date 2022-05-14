@@ -24,7 +24,7 @@ class UserSavedPlacesAdmin(admin.ModelAdmin):
     list_filter = ["name", "user"]
     # these are the fields that can be updated
     search_fields = ["name", "user"]
-    ordering = ["name","created_at"]
+    ordering = ["name", "created_at"]
     model = UserSavedPlacesModel
 
 
