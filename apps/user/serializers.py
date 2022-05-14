@@ -7,15 +7,15 @@ from rest_framework import serializers
 
 
 class UserSavedPlacesSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=512)
-    image = serializers.ImageField()
-    description = serializers.CharField(max_length=1024)
-    city = serializers.CharField(max_length=50)
-    street = serializers.CharField(max_length=100)
-    address = serializers.CharField(max_length=512)
-    monument = serializers.CharField(max_length=100)
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
+    # name = serializers.CharField(max_length=512)
+    # image = serializers.ImageField()
+    # description = serializers.CharField(max_length=1024)
+    # city = serializers.CharField(max_length=50)
+    # street = serializers.CharField(max_length=100)
+    # address = serializers.CharField(max_length=512)
+    # monument = serializers.CharField(max_length=100)
+    # latitude = serializers.FloatField()
+    # longitude = serializers.FloatField()
 
     def validate_image(self, value):
         length = len(value)
