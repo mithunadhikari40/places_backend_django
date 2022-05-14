@@ -20,9 +20,10 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, Blacklist
 
 from apps.user_auth.models import UserAuthModel
 from apps.user_auth.serializers import UserAuthSerializer
-from apps.user_auth.tokenization import get_token_for_user
 
 from django.conf import settings
+
+from apps.utils.timestamp.utils import get_token_for_user
 
 
 class RegisterApi(GenericAPIView):
