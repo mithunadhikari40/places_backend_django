@@ -34,7 +34,7 @@ class RegisterApi(GenericAPIView):
         try:
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid():
-                query = UserAuthModel.objects.filter(email=serializer.data.get('email'))
+                query = UserAuthModel.objects.filter(email=request.data.get('email'))
 
                 if query.exists():
                     return Response({'error': 'An account already exists with this email'},

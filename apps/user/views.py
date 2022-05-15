@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, DjangoObjectPermissions, \
+    DjangoModelPermissions
 from rest_framework.response import Response
 
 from apps.user.models import UserSavedPlacesModel
@@ -25,9 +26,28 @@ class UserSavedPlacesView(viewsets.ViewSet):
             return Response({'error': f'Id is required'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             place = UserSavedPlacesModel.objects.get(id=pk)
+            print(f"The user is this {request.user.id} and place is {place.user}")
             if place:
                 serializer = UserSavedPlacesSerializer(place)
                 return Response({'place': serializer.data}, status=status.HTTP_200_OK)
+
+            return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
+
+        except BaseException as e:
+            return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def destroy(request, pk=None):
+        if pk is None:
+            return Response({'error': f'Id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            place = UserSavedPlacesModel.objects.get(id=pk)
+            if place:
+                if place.user.id == request.user.id:
+                    place.delete()
+                    return Response({'message': 'Place deleted successfully'}, status=status.HTTP_200_OK)
+                return Response({'error': f'You do not have permission to delete this item'},
+                                status=status.HTTP_403_FORBIDDEN)
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
@@ -41,6 +61,51 @@ class UserSavedPlacesView(viewsets.ViewSet):
                 serializer = UserSavedPlacesSerializer(places, many=True)
                 return Response({'place': serializer.data}, status=status.HTTP_200_OK)
             return Response({'error': f'No places found with id of'}, status=status.HTTP_404_NOT_FOUND)
+
+        except BaseException as e:
+            return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def partial_update(request, pk=None):
+        if pk is None:
+            return Response({'error': f'Id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            place = UserSavedPlacesModel.objects.get(id=pk)
+            if place:
+                if place.user.id == request.user.id:
+                    serializer = UserSavedPlacesSerializer(place, data=request.data, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+
+                        return Response({'message': 'Place updated successfully', 'data': serializer.data},
+                                        status=status.HTTP_200_OK)
+                return Response({'error': f'You do not have permission to update this item'},
+                                status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
+
+        except BaseException as e:
+            return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def update(request, pk=None):
+        if pk is None:
+            return Response({'error': f'Id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            place = UserSavedPlacesModel.objects.get(id=pk)
+            if place:
+                if place.user.id == request.user.id:
+                    request.data.update({'user': request.user.id})
+                    serializer = UserSavedPlacesSerializer(place, data=request.data)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response({'message': 'Place updated successfully', 'data': serializer.data},
+                                        status=status.HTTP_200_OK)
+                    return Response({'error': serializer.errors},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                return Response({'error': f'You do not have permission to update this item'},
+                                status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
