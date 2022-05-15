@@ -34,6 +34,12 @@ class RegisterApi(GenericAPIView):
         try:
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid():
+                query = UserAuthModel.objects.filter(email=serializer.data.get('email'))
+
+                if query.exists():
+                    return Response({'error': 'An account already exists with this email'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
                 account = serializer.save()
                 # account.is_active = True
                 account.password = make_password(account.password)
@@ -136,4 +142,3 @@ class LogOutApi(GenericAPIView):
             return Response({'message': 'User Logged out successfully'})
         except BaseException as e:
             return Response({'message': f'{str(e)}'})
-

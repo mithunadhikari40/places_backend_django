@@ -22,6 +22,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+*.pyc
 
 
 ### Python ###
@@ -78,12 +79,13 @@ docs/_build/
 
 # PyBuilder
 target/
+media/
 
 
 ### Django ###
 *.log
 
-*.pyc
+
 local_settings.py
 
 .env
