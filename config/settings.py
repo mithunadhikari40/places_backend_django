@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.utils.timestamp.apps.TimestampConfig',
     # 'apps.user_auth.apps.UserAuthConfig',
     'apps.user.apps.UsersConfig',
+    'apps.favorites.apps.FavoriteConfig',
     'apps.user_auth',
 ]
 AUTH_USER_MODEL = 'user_auth.UserAuthModel'
