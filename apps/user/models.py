@@ -25,4 +25,4 @@ class UserSavedPlacesModel(TimeStamp):
     longitude = models.FloatField(max_length=10)
 
     def __str__(self):
-        return f"{self.name}-{self.image}"
+        return f"{self.name}-{self.id}"

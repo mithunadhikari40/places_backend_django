@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -7,8 +8,6 @@ from apps.favorites.serializers import FavoriteSerializer
 
 
 class FavoriteView(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
-
     @staticmethod
     def create(request):
         try:
@@ -111,3 +110,39 @@ class FavoriteView(viewsets.ViewSet):
 
         except BaseException as e:
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def is_favorite(request, favorite_item):
+    try:
+        if not favorite_item:
+            return Response({'error': 'Place id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        user = request.user
+        filters = {'user': user.id, 'favorite': favorite_item}
+        # item = FavoriteModel.objects.get(favorite__id=favorite_item, user__id=user.id)
+        item = FavoriteModel.objects.filter(**filters)
+        data = {}
+        if item:
+            data["is_favorite"] = True
+        else:
+            data["is_favorite"] = False
+        return Response(data, status=status.HTTP_200_OK)
+
+    except BaseException as e:
+        return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def list_user_favorite(request):
+    try:
+        user = request.user
+        # filters = {'user': user.id, 'favorite': favorite_item}
+        filters = {'user': user.id}
+        # item = FavoriteModel.objects.get(user__id=user.id)
+        # item = FavoriteModel.objects.get(favorite__id=favorite_item, user__id=user.id)
+        item = FavoriteModel.objects.filter(**filters)
+        serializer = FavoriteSerializer(item, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+
+    except BaseException as e:
+        return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

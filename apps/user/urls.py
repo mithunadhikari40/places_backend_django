@@ -11,7 +11,8 @@ router.register('add_place', views.UserSavedPlacesView, basename='add_place')
 
 urlpatterns = [
     # path('add_place', views.UserSavedPlacesView),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('uploaded_places', views.user_uploaded_places),
 
     # path('add_place/<int:pk>', views.UserSavedPlacesView.as_view()),
 

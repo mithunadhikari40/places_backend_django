@@ -11,8 +11,9 @@ router.register('', views.FavoriteView, basename='')
 
 urlpatterns = [
     # path('add_place', views.UserSavedPlacesView),
-    path('', include(router.urls))
+    path('', include(router.urls)),
 
-    # path('add_place/<int:pk>', views.UserSavedPlacesView.as_view()),
+    path('is_favorite/<favorite_item>', views.is_favorite),
+    path('list_favorite', views.list_user_favorite),
 
 ]

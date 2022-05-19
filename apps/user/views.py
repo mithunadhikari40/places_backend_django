@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
@@ -14,7 +15,6 @@ from rest_framework import viewsets, status
 
 
 class UserSavedPlacesView(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     """When we annotate a method with staticmethod, the first argument self will not be there, if we
@@ -133,3 +133,19 @@ class UserSavedPlacesView(viewsets.ViewSet):
 
         except BaseException as e:
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def user_uploaded_places(request):
+    try:
+        user = request.user
+        # filters = {'user': user.id, 'favorite': favorite_item}
+        filters = {'user': user.id}
+        # item = FavoriteModel.objects.get(user__id=user.id)
+        # item = FavoriteModel.objects.get(favorite__id=favorite_item, user__id=user.id)
+        item = UserSavedPlacesModel.objects.filter(**filters)
+        serializer = UserSavedPlacesSerializer(item, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+
+    except BaseException as e:
+        return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
