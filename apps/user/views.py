@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -12,6 +14,8 @@ from apps.user.models import UserSavedPlacesModel
 from apps.user.serializers import UserSavedPlacesSerializer
 from rest_framework import viewsets, status
 from rest_framework import viewsets, status
+
+logger = logging.getLogger()
 
 
 class UserSavedPlacesView(viewsets.ViewSet):
@@ -34,6 +38,8 @@ class UserSavedPlacesView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -51,6 +57,8 @@ class UserSavedPlacesView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -63,6 +71,8 @@ class UserSavedPlacesView(viewsets.ViewSet):
             return Response({'error': f'No places found with id of'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -84,6 +94,8 @@ class UserSavedPlacesView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -108,6 +120,8 @@ class UserSavedPlacesView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -132,6 +146,8 @@ class UserSavedPlacesView(viewsets.ViewSet):
                 return Response(serializer.errors)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -148,4 +164,6 @@ def user_uploaded_places(request):
         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
     except BaseException as e:
+        logger.exception(f'{str(e)}')
+
         return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

@@ -1,3 +1,4 @@
+import logging
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
@@ -5,6 +6,8 @@ from rest_framework.response import Response
 
 from apps.favorites.models import FavoriteModel
 from apps.favorites.serializers import FavoriteSerializer
+
+logger = logging.getLogger()
 
 
 class FavoriteView(viewsets.ViewSet):
@@ -42,6 +45,8 @@ class FavoriteView(viewsets.ViewSet):
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -58,6 +63,8 @@ class FavoriteView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -75,6 +82,8 @@ class FavoriteView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -88,6 +97,8 @@ class FavoriteView(viewsets.ViewSet):
             return Response({'error': f'No places found with id of'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
@@ -109,6 +120,8 @@ class FavoriteView(viewsets.ViewSet):
             return Response({'error': f'No place found with id of {pk}'}, status=status.HTTP_404_NOT_FOUND)
 
         except BaseException as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -129,6 +142,8 @@ def is_favorite(request, favorite_item):
         return Response(data, status=status.HTTP_200_OK)
 
     except BaseException as e:
+        logger.exception(f'{str(e)}')
+
         return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -145,4 +160,6 @@ def list_user_favorite(request):
         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
     except BaseException as e:
+        logger.exception(f'{str(e)}')
+
         return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

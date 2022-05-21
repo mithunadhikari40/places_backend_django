@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password, check_password
@@ -24,6 +25,8 @@ from apps.user_auth.serializers import UserAuthSerializer
 from django.conf import settings
 
 from apps.utils.timestamp.utils import get_token_for_user
+
+logger = logging.getLogger()
 
 
 class RegisterApi(GenericAPIView):
@@ -63,15 +66,21 @@ class RegisterApi(GenericAPIView):
                 data.update(token)
                 return Response(data)
             else:
+                logger.exception(serializer.errors)
+
                 print(f"The invalid set of data is {serializer.errors}")
                 return Response(serializer.errors)
 
         except IntegrityError as e:
+            logger.exception(f'{str(e)}')
+
             # account = UserAuthModel.objects.get(email='')
             # account.delete()
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
         except KeyError as e:
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -95,6 +104,8 @@ class LoginApi(GenericAPIView):
             account = UserAuthModel.objects.get(email=email)
         except BaseException as e:
             # raise ValidationError({"error": f'{str(e)}'})
+            logger.exception(f'{str(e)}')
+
             return Response({'error': f'{str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
         token = get_token_for_user(account)
@@ -141,4 +152,5 @@ class LogOutApi(GenericAPIView):
             logout(request)
             return Response({'message': 'User Logged out successfully'})
         except BaseException as e:
+            logger.exception(f'{str(e)}')
             return Response({'message': f'{str(e)}'})

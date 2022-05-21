@@ -23,6 +23,11 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.pyc
+*/*.pyc
+
+
+# Ignoring the migration files
+*_initial.py
 
 
 ### Python ###
@@ -80,6 +85,8 @@ docs/_build/
 # PyBuilder
 target/
 media/
+logs/
+
 
 
 ### Django ###

@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import logging.config
+
 from datetime import timedelta
 from pathlib import Path
 import os
@@ -142,6 +144,84 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(days=7),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=14),
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        # requires the debug set to true
+        # 'require_debug_true': {
+        #     '()': 'django.utils.log.RequireDebugTrue',
+        # },
+        # 'require_debug_false': {
+        #     '()': 'django.utils.log.RequireDebugFalse',
+        # },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
+            "datefmt": "%d-%b-%Y %H:%M:%S %z",
+        },
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "file": {
+            "level": "DEBUG",
+            # 'filters': ['require_debug_false'],
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "simple",
+            "filename": os.path.join(BASE_DIR, "logs/places_log.log"),
+            "maxBytes": 1024 * 1024 * 1024,
+            "backupCount": 5,
+        }, "server": {
+            "level": "DEBUG",
+            # 'filters': ['require_debug_false'],
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "verbose",
+            "filename": os.path.join(BASE_DIR, "logs/response.log"),
+            "maxBytes": 1024 * 1024 * 1024,
+            "backupCount": 5,
+        },
+        "security": {
+            "level": "ERROR",
+            # 'filters': ['require_debug_false'],
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "verbose",
+            "filename": os.path.join(BASE_DIR, "logs/security.log"),
+            "maxBytes": 1024 * 1024 * 1024,
+            "backupCount": 5,
+        },
+        "null": {
+            "class": "logging.NullHandler",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "django.security.DisallowedHost": {
+            "handlers": ["null"],
+            "propagate": True,
+        },
+        "django.request": {
+            "handlers": ["file", "console", "server"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+        "django.security.*": {
+            "handlers": ["security", "console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
 }
 
 WSGI_APPLICATION = 'config.wsgi.application'
